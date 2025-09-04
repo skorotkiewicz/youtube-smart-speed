@@ -1,19 +1,45 @@
 let smartEnabled = true;
 let hudElement = null;
 let autoTrainEnabled = true;
-const MIN_SPEED = 2;
-const MAX_SPEED = 3.25;
+let showHudEnabled = true;
+let minSpeed = 2;
+let maxSpeed = 3.25;
 
-// // załaduj ustawienia
-chrome.storage.sync.get(["autoTrain", "showHud"], (cfg) => {
-	initHUD();
-});
+const settings = {
+	smartSpeedEnabled: true,
+	autoTrain: true,
+	showHud: true,
+	minSpeed: 2,
+	maxSpeed: 3.25
+};
+
+function loadSettings() {
+	chrome.storage.sync.get(Object.keys(settings), (cfg) => {
+		Object.assign(settings, cfg);
+		smartEnabled = settings.smartSpeedEnabled;
+		autoTrainEnabled = settings.autoTrain;
+		showHudEnabled = settings.showHud;
+		minSpeed = settings.minSpeed;
+		maxSpeed = settings.maxSpeed;
+		
+		if (showHudEnabled) {
+			initHUD();
+		} else if (hudElement) {
+			hudElement.remove();
+			hudElement = null;
+		}
+	});
+}
+
+loadSettings();
 
 // inicjalizacja HUD
 function initHUD() {
+	if (hudElement) return;
+	
 	hudElement = document.createElement("div");
 	hudElement.id = "smartspeed-hud";
-	hudElement.textContent = "Speed: 1x";
+	hudElement.textContent = smartEnabled ? "Smart Speed: 1x" : "Smart Speed: OFF";
 	document.body.appendChild(hudElement);
 }
 
@@ -60,10 +86,12 @@ function analyzeAndSetSpeed(video) {
 		// confidence: cisza → szybciej, mowa → wolniej
 		const confidence =
 			result.silence / ((result.silence || 0) + (result.speech || 0));
-		const speed = MIN_SPEED + confidence * (MAX_SPEED - MIN_SPEED); // 2..4x
+		const speed = minSpeed + confidence * (maxSpeed - minSpeed);
 		video.playbackRate = parseFloat(speed.toFixed(2));
 
-		if (hudElement) hudElement.textContent = `Speed: ${speed.toFixed(2)}x`;
+		if (hudElement && showHudEnabled) {
+			hudElement.textContent = `Smart Speed: ${speed.toFixed(2)}x`;
+		}
 
 		// auto-trening: korzystamy z globalnej zmiennej, nie wołamy get w każdej klatce
 		if (autoTrainEnabled) {
@@ -206,15 +234,62 @@ function setupVideoObserver() {
 setupVideoObserver();
 
 // odbiór komunikatów (np. ON/OFF)
-chrome.runtime.onMessage.addListener((msg) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 	if (msg.action === "toggleSmartSpeed") {
 		smartEnabled = !smartEnabled;
+		chrome.storage.sync.set({ smartSpeedEnabled: smartEnabled });
+		
 		const video = document.querySelector("video");
 		if (!smartEnabled) {
 			if (video) video.playbackRate = 1.0;
-			if (hudElement) hudElement.textContent = "Smart OFF";
+			if (hudElement && showHudEnabled) {
+				hudElement.textContent = "Smart Speed: OFF";
+			}
 		} else {
 			if (video) startSmartSpeed(video);
+			if (hudElement && showHudEnabled) {
+				hudElement.textContent = "Smart Speed: 1x";
+			}
 		}
+		
+		sendResponse({ status: "toggled", enabled: smartEnabled });
+		
+	} else if (msg.action === "settingsUpdated") {
+		Object.assign(settings, msg.settings);
+		smartEnabled = settings.smartSpeedEnabled;
+		autoTrainEnabled = settings.autoTrain;
+		showHudEnabled = settings.showHud;
+		minSpeed = settings.minSpeed;
+		maxSpeed = settings.maxSpeed;
+		
+		if (showHudEnabled) {
+			initHUD();
+		} else if (hudElement) {
+			hudElement.remove();
+			hudElement = null;
+		}
+		
+		const video = document.querySelector("video");
+		if (smartEnabled && video) {
+			startSmartSpeed(video);
+		} else if (video) {
+			video.playbackRate = 1.0;
+		}
+		
+		sendResponse({ status: "settings updated" });
+		
+	} else if (msg.action === "modelReset") {
+		net.train([
+			{ input: { volume: 0.0 }, output: { silence: 1 } },
+			{ input: { volume: 0.9 }, output: { speech: 1 } },
+		]);
+		
+		sendResponse({ status: "model reset" });
+		
+	} else if (msg.action === "getStatus") {
+		sendResponse({ 
+			enabled: smartEnabled,
+			settings: settings
+		});
 	}
 });

@@ -2,9 +2,104 @@
 <html>
 <head>
   <title>Smart Speed</title>
+  <meta charset="utf-8" />
+  <style>
+    body {
+      width: 250px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .header h2 {
+      margin: 0;
+      color: #333;
+      font-size: 18px;
+    }
+    .status {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border: 2px solid #e0e0e0;
+    }
+    .status.enabled {
+      border-color: #4CAF50;
+      background: #f8fff8;
+    }
+    .status.disabled {
+      border-color: #f44336;
+      background: #fff8f8;
+    }
+    .status-text {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .status.enabled .status-text {
+      color: #4CAF50;
+    }
+    .status.disabled .status-text {
+      color: #f44336;
+    }
+    .speed-info {
+      font-size: 12px;
+      color: #666;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .toggle-btn {
+      background: #2196F3;
+      color: white;
+    }
+    .toggle-btn:hover {
+      background: #1976D2;
+    }
+    .toggle-btn.enabled {
+      background: #4CAF50;
+    }
+    .toggle-btn.enabled:hover {
+      background: #45a049;
+    }
+    .options-btn {
+      background: #ff9800;
+      color: white;
+    }
+    .options-btn:hover {
+      background: #e68900;
+    }
+  </style>
 </head>
 <body>
-  <button id="toggle">Włącz/wyłącz SmartSpeed</button>
+  <div class="header">
+    <h2>🚀 Smart Speed</h2>
+  </div>
+  
+  <div class="status" id="status">
+    <div class="status-text" id="statusText">Sprawdzanie...</div>
+    <div class="speed-info" id="speedInfo">Załaduj ustawienia...</div>
+  </div>
+  
+  <div class="controls">
+    <button id="toggle" class="toggle-btn">Włącz/wyłącz Smart Speed</button>
+    <button id="options" class="options-btn">Otwórz ustawienia</button>
+  </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>

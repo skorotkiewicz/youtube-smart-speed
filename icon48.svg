@@ -1,0 +1,7 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="22" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/>
+  <polygon points="18,15 33,24 18,33" fill="white"/>
+  <text x="36" y="16" font-family="Arial" font-size="12" fill="#FF5722" font-weight="bold">AI</text>
+  <circle cx="8" cy="8" r="3" fill="#FFC107" opacity="0.8"/>
+  <circle cx="40" cy="40" r="3" fill="#2196F3" opacity="0.8"/>
+</svg>

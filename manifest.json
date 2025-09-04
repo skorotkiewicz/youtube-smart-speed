@@ -1,14 +1,15 @@
 {
 	"manifest_version": 2,
-	"name": "YouTube Smart Speed",
-	"version": "1.0",
-	"description": "Dynamiczne tempo odtwarzania filmów na YT z auto-treningiem.",
-	"permissions": ["storage", "tabs"],
+	"name": "YouTube Smart Speed - AI Playback Control",
+	"version": "2.0.0",
+	"description": "Inteligentne sterowanie prędkością odtwarzania YouTube z użyciem AI. Automatycznie przyspiesza podczas ciszy i spowalnia podczas mowy. Pełna konfiguracja przez użytkownika.",
+	"permissions": ["storage", "tabs", "activeTab"],
 	"content_scripts": [
 		{
-			"matches": ["*://*.youtube.com/*"],
+			"matches": ["*://*.youtube.com/*", "*://youtube.com/*"],
 			"js": ["brain.js", "content.js"],
-			"css": ["overlay.css"]
+			"css": ["overlay.css"],
+			"run_at": "document_idle"
 		}
 	],
 	"options_ui": {
@@ -16,6 +17,14 @@
 		"open_in_tab": true
 	},
 	"background": {
-		"scripts": ["background.js"]
-	}
+		"scripts": ["background.js"],
+		"persistent": false
+	},
+	"browser_action": {
+		"default_popup": "popup.html",
+		"default_title": "YouTube Smart Speed"
+	},
+	"web_accessible_resources": [],
+	"homepage_url": "https://github.com/skorotkiewicz/youtube-smart-speed",
+	"author": "Sebastian Korotkiewicz"
 }
