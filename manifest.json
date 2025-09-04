@@ -1,0 +1,21 @@
+{
+	"manifest_version": 2,
+	"name": "YouTube Smart Speed",
+	"version": "1.0",
+	"description": "Dynamiczne tempo odtwarzania filmów na YT z auto-treningiem.",
+	"permissions": ["storage", "tabs"],
+	"content_scripts": [
+		{
+			"matches": ["*://*.youtube.com/*"],
+			"js": ["brain.js", "content.js"],
+			"css": ["overlay.css"]
+		}
+	],
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	},
+	"background": {
+		"scripts": ["background.js"]
+	}
+}
