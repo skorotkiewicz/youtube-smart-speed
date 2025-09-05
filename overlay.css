@@ -1,18 +1,5 @@
-#smart-speed-hud {
-	position: fixed;
-	bottom: 60px;
-	right: 20px;
-	background: rgba(0, 0, 0, 0.6);
-	color: white;
-	padding: 6px 10px;
-	border-radius: 8px;
-	font-size: 14px;
-	z-index: 9999;
-	font-family: sans-serif;
-}
-
 #smartspeed-hud {
-	position: fixed;
+	position: absolute;
 	top: 10px;
 	right: 10px;
 	background: rgba(0, 0, 0, 0.7);

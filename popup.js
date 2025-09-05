@@ -19,27 +19,30 @@ function updateUI(enabled, settings) {
 	}
 
 	if (settings) {
-		speedInfo.textContent = `Speed: ${settings.minSpeed}x - ${settings.maxSpeed}x | Auto-training: ${settings.autoTrain ? 'ON' : 'OFF'} | HUD: ${settings.showHud ? 'ON' : 'OFF'}`;
+		speedInfo.textContent = `Speed: ${settings.minSpeed}x - ${settings.maxSpeed}x | Auto-training: ${settings.autoTrain ? "ON" : "OFF"} | HUD: ${settings.showHud ? "ON" : "OFF"}`;
 	}
-	
+
 	currentState = enabled;
 }
 
 function checkStatus() {
-	chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 		const tab = tabs[0];
-		if (tab && tab.url.includes('youtube.com')) {
+		if (tab && tab.url.includes("youtube.com")) {
 			chrome.tabs.sendMessage(tab.id, { action: "getStatus" }, (response) => {
 				if (response) {
 					updateUI(response.enabled, response.settings);
 				} else {
-					document.getElementById("statusText").textContent = "Cannot connect to YouTube tab";
-					document.getElementById("speedInfo").textContent = "Refresh YouTube page";
+					document.getElementById("statusText").textContent =
+						"Cannot connect to YouTube tab";
+					document.getElementById("speedInfo").textContent =
+						"Refresh YouTube page";
 				}
 			});
 		} else {
 			document.getElementById("statusText").textContent = "Open YouTube tab";
-			document.getElementById("speedInfo").textContent = "Plugin works only on YouTube";
+			document.getElementById("speedInfo").textContent =
+				"Plugin works only on YouTube";
 		}
 	});
 }
@@ -49,15 +52,19 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("toggle").addEventListener("click", () => {
-	chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 		const tab = tabs[0];
-		if (tab && tab.url.includes('youtube.com')) {
-			chrome.tabs.sendMessage(tab.id, { action: "toggleSmartSpeed" }, (response) => {
-				if (response) {
-					updateUI(response.enabled, currentState ? {} : {});
-					setTimeout(checkStatus, 100);
-				}
-			});
+		if (tab && tab.url.includes("youtube.com")) {
+			chrome.tabs.sendMessage(
+				tab.id,
+				{ action: "toggleSmartSpeed" },
+				(response) => {
+					if (response) {
+						updateUI(response.enabled, currentState ? {} : {});
+						setTimeout(checkStatus, 100);
+					}
+				},
+			);
 		}
 	});
 });

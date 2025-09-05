@@ -31,6 +31,9 @@ function loadSettings() {
 			hudElement.remove();
 			hudElement = null;
 		}
+
+		// Now that settings are loaded, set up video observer
+		setupVideoObserver();
 	});
 }
 
@@ -45,7 +48,7 @@ function initHUD() {
 
 	hudElement = document.createElement("div");
 	hudElement.id = "smartspeed-hud";
-	
+
 	if (smartEnabled) {
 		hudElement.textContent = "Smart Speed: 1x";
 	} else {
@@ -54,33 +57,52 @@ function initHUD() {
 		leftBtn.className = "speed-control-btn";
 		leftBtn.textContent = "◀";
 		leftBtn.onclick = () => changeManualSpeed(-0.25);
-		
+
 		const speedDisplay = document.createElement("span");
 		speedDisplay.textContent = `Manual: ${manualSpeed}x`;
-		
+
 		const rightBtn = document.createElement("button");
 		rightBtn.className = "speed-control-btn";
 		rightBtn.textContent = "▶";
 		rightBtn.onclick = () => changeManualSpeed(0.25);
-		
+
 		hudElement.appendChild(leftBtn);
 		hudElement.appendChild(speedDisplay);
 		hudElement.appendChild(rightBtn);
 	}
-	
-	document.body.appendChild(hudElement);
+
+	const video = document.querySelector("video");
+	const container = video ? video.parentElement : null;
+
+	if (container) {
+		container.appendChild(hudElement);
+
+		// Hide HUD by default
+		hudElement.style.display = "none";
+
+		// Show/hide on hover
+		container.addEventListener("mouseenter", () => {
+			if (hudElement) hudElement.style.display = "flex";
+		});
+
+		container.addEventListener("mouseleave", () => {
+			if (hudElement) hudElement.style.display = "none";
+		});
+	} else {
+		document.body.appendChild(hudElement);
+	}
 }
 
 function changeManualSpeed(delta) {
 	manualSpeed = Math.max(0.25, Math.min(4.0, manualSpeed + delta));
 	manualSpeed = Math.round(manualSpeed * 100) / 100; // Round to 2 decimals
-	
+
 	// Update video speed immediately
 	const video = document.querySelector("video");
 	if (video && !smartEnabled) {
 		video.playbackRate = manualSpeed;
 	}
-	
+
 	// Update HUD display
 	if (hudElement && !smartEnabled) {
 		const speedDisplay = hudElement.querySelector("span");
@@ -88,7 +110,7 @@ function changeManualSpeed(delta) {
 			speedDisplay.textContent = `Manual: ${manualSpeed}x`;
 		}
 	}
-	
+
 	// Save to storage
 	chrome.storage.sync.set({ manualSpeed: manualSpeed });
 }
@@ -158,7 +180,7 @@ function analyzeAndSetSpeed(video) {
 				{ iterations: 1 },
 			);
 			const json = net.toJSON();
-			console.log(settings.autoTrain);
+			// console.log(settings.autoTrain);
 			chrome.storage.local.set({ smartSpeedModel: json });
 		}
 
@@ -184,10 +206,22 @@ function setupVideoObserver() {
 		} else {
 			video.playbackRate = manualSpeed;
 		}
+	} else {
+		// Observe for video element if not found
+		const observer = new MutationObserver(() => {
+			const video = document.querySelector("video");
+			if (video) {
+				observer.disconnect();
+				if (smartEnabled) {
+					startSmartSpeed(video);
+				} else {
+					video.playbackRate = manualSpeed;
+				}
+			}
+		});
+		observer.observe(document.body, { childList: true, subtree: true });
 	}
 }
-
-setupVideoObserver();
 
 // message listener (e.g. ON/OFF)
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {

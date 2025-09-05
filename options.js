@@ -2,66 +2,77 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Debug function to check storage
 	window.debugStorage = () => {
 		chrome.storage.sync.get(null, (items) => {
-			console.log('All storage items:', items);
+			console.log("All storage items:", items);
 		});
 	};
-	console.log('Use debugStorage() in console to check all storage items');
+	console.log("Use debugStorage() in console to check all storage items");
 	const defaults = {
 		smartSpeedEnabled: true,
 		autoTrain: true,
 		showHud: true,
 		minSpeed: 2,
-		maxSpeed: 3.25
+		maxSpeed: 3.25,
+		manualSpeed: 1.0,
 	};
 
 	chrome.storage.sync.get(Object.keys(defaults), (cfg) => {
 		if (chrome.runtime.lastError) {
-			console.error('Error loading settings:', chrome.runtime.lastError);
+			console.error("Error loading settings:", chrome.runtime.lastError);
 			cfg = {};
 		}
-		
-		console.log('Loaded settings:', cfg);
+
+		console.log("Loaded settings:", cfg);
 		const config = { ...defaults, ...cfg };
-		
-		document.getElementById("smartSpeedEnabled").checked = config.smartSpeedEnabled;
+
+		document.getElementById("smartSpeedEnabled").checked =
+			config.smartSpeedEnabled;
 		document.getElementById("autoTrain").checked = config.autoTrain;
 		document.getElementById("showHud").checked = config.showHud;
-		
+
 		document.getElementById("minSpeedRange").value = config.minSpeed;
 		document.getElementById("minSpeedNumber").value = config.minSpeed;
 		document.getElementById("maxSpeedRange").value = config.maxSpeed;
 		document.getElementById("maxSpeedNumber").value = config.maxSpeed;
-		
-		console.log('Applied config:', config);
+		document.getElementById("manualSpeedRange").value = config.manualSpeed;
+		document.getElementById("manualSpeedNumber").value = config.manualSpeed;
+
+		console.log("Applied config:", config);
 	});
 
 	function syncSpeedInputs(rangeId, numberId) {
 		const range = document.getElementById(rangeId);
 		const number = document.getElementById(numberId);
-		const otherRange = rangeId === 'minSpeedRange' ? 'maxSpeedRange' : 'minSpeedRange';
-		const otherNumber = rangeId === 'minSpeedRange' ? 'maxSpeedNumber' : 'minSpeedNumber';
-		
+
 		function updateValue() {
 			const value = parseFloat(this.value);
-			const isMin = rangeId === 'minSpeedRange';
-			const otherValue = parseFloat(document.getElementById(otherRange).value);
-			
-			if (isMin && value >= otherValue) {
-				this.value = Math.max(0.25, otherValue - 0.25);
-			} else if (!isMin && value <= otherValue) {
-				this.value = Math.min(4, otherValue + 0.25);
+
+			// Cross-check for min and max speeds
+			if (rangeId === "minSpeedRange" || rangeId === "maxSpeedRange") {
+				const otherRange =
+					rangeId === "minSpeedRange" ? "maxSpeedRange" : "minSpeedRange";
+				const otherValue = parseFloat(
+					document.getElementById(otherRange).value,
+				);
+				const isMin = rangeId === "minSpeedRange";
+
+				if (isMin && value >= otherValue) {
+					this.value = Math.max(0.25, otherValue - 0.25);
+				} else if (!isMin && value <= otherValue) {
+					this.value = Math.min(4, otherValue + 0.25);
+				}
 			}
-			
+
 			range.value = this.value;
 			number.value = this.value;
 		}
-		
-		range.addEventListener('input', updateValue);
-		number.addEventListener('input', updateValue);
+
+		range.addEventListener("input", updateValue);
+		number.addEventListener("input", updateValue);
 	}
 
-	syncSpeedInputs('minSpeedRange', 'minSpeedNumber');
-	syncSpeedInputs('maxSpeedRange', 'maxSpeedNumber');
+	syncSpeedInputs("minSpeedRange", "minSpeedNumber");
+	syncSpeedInputs("maxSpeedRange", "maxSpeedNumber");
+	syncSpeedInputs("manualSpeedRange", "manualSpeedNumber");
 
 	document.getElementById("save").addEventListener("click", () => {
 		const settings = {
@@ -69,12 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
 			autoTrain: document.getElementById("autoTrain").checked,
 			showHud: document.getElementById("showHud").checked,
 			minSpeed: parseFloat(document.getElementById("minSpeedNumber").value),
-			maxSpeed: parseFloat(document.getElementById("maxSpeedNumber").value)
+			maxSpeed: parseFloat(document.getElementById("maxSpeedNumber").value),
+			manualSpeed: parseFloat(
+				document.getElementById("manualSpeedNumber").value,
+			),
 		};
 
 		chrome.storage.sync.set(settings, () => {
 			if (chrome.runtime.lastError) {
-				console.error('Error saving settings:', chrome.runtime.lastError);
+				console.error("Error saving settings:", chrome.runtime.lastError);
 				const button = document.getElementById("save");
 				button.textContent = "Error saving!";
 				button.style.background = "#f44336";
@@ -85,40 +99,47 @@ document.addEventListener("DOMContentLoaded", () => {
 				return;
 			}
 
-			console.log('Settings saved successfully:', settings);
+			console.log("Settings saved successfully:", settings);
 			const button = document.getElementById("save");
 			const originalText = button.textContent;
 			button.textContent = "Saved!";
 			button.style.background = "#4CAF50";
-			
+
 			setTimeout(() => {
 				button.textContent = originalText;
 				button.style.background = "#4CAF50";
 			}, 1500);
-			
-			chrome.tabs.query({url: "*://*.youtube.com/*"}, (tabs) => {
-				tabs.forEach(tab => {
-					chrome.tabs.sendMessage(tab.id, { action: "settingsUpdated", settings });
+
+			chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+				tabs.forEach((tab) => {
+					chrome.tabs.sendMessage(tab.id, {
+						action: "settingsUpdated",
+						settings,
+					});
 				});
 			});
 		});
 	});
 
 	document.getElementById("resetModel").addEventListener("click", () => {
-		if (confirm("Are you sure you want to reset the trained neural network model? This operation is irreversible.")) {
+		if (
+			confirm(
+				"Are you sure you want to reset the trained neural network model? This operation is irreversible.",
+			)
+		) {
 			chrome.storage.local.remove("smartSpeedModel", () => {
 				const button = document.getElementById("resetModel");
 				const originalText = button.textContent;
 				button.textContent = "Model reset!";
 				button.style.background = "#4CAF50";
-				
+
 				setTimeout(() => {
 					button.textContent = originalText;
 					button.style.background = "#ff9800";
 				}, 2000);
-				
-				chrome.tabs.query({url: "*://*.youtube.com/*"}, (tabs) => {
-					tabs.forEach(tab => {
+
+				chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+					tabs.forEach((tab) => {
 						chrome.tabs.sendMessage(tab.id, { action: "modelReset" });
 					});
 				});
