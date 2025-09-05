@@ -1,3 +1,4 @@
+// Cross-browser compatibility: Inline constants work everywhere
 const DEFAULT_SETTINGS = {
 	smartSpeedEnabled: true,
 	autoTrain: true,
