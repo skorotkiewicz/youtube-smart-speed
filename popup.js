@@ -1,5 +1,3 @@
-let currentState = null;
-
 function updateUI(enabled, settings) {
 	const statusElement = document.getElementById("status");
 	const statusText = document.getElementById("statusText");
@@ -21,8 +19,6 @@ function updateUI(enabled, settings) {
 	if (settings) {
 		speedInfo.textContent = `Speed: ${settings.minSpeed}x - ${settings.maxSpeed}x | Auto-training: ${settings.autoTrain ? "ON" : "OFF"} | HUD: ${settings.showHud ? "ON" : "OFF"}`;
 	}
-
-	currentState = enabled;
 }
 
 function checkStatus() {
@@ -60,7 +56,7 @@ document.getElementById("toggle").addEventListener("click", () => {
 				{ action: "toggleSmartSpeed" },
 				(response) => {
 					if (response) {
-						updateUI(response.enabled, currentState ? {} : {});
+						updateUI(response.enabled);
 						setTimeout(checkStatus, 100);
 					}
 				},

@@ -1,11 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-	// Debug function to check storage
-	window.debugStorage = () => {
-		chrome.storage.sync.get(null, (items) => {
-			console.log("All storage items:", items);
-		});
-	};
-	console.log("Use debugStorage() in console to check all storage items");
 	const defaults = {
 		smartSpeedEnabled: true,
 		autoTrain: true,
@@ -16,12 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	};
 
 	chrome.storage.sync.get(Object.keys(defaults), (cfg) => {
-		if (chrome.runtime.lastError) {
-			console.error("Error loading settings:", chrome.runtime.lastError);
-			cfg = {};
-		}
-
-		console.log("Loaded settings:", cfg);
 		const config = { ...defaults, ...cfg };
 
 		document.getElementById("smartSpeedEnabled").checked =
@@ -35,8 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("maxSpeedNumber").value = config.maxSpeed;
 		document.getElementById("manualSpeedRange").value = config.manualSpeed;
 		document.getElementById("manualSpeedNumber").value = config.manualSpeed;
-
-		console.log("Applied config:", config);
 	});
 
 	function syncSpeedInputs(rangeId, numberId) {
@@ -99,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				return;
 			}
 
-			console.log("Settings saved successfully:", settings);
 			const button = document.getElementById("save");
 			const originalText = button.textContent;
 			button.textContent = "Saved!";

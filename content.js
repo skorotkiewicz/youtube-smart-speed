@@ -1,10 +1,8 @@
-let smartEnabled = true;
 let hudElement = null;
-let autoTrainEnabled = true;
-let showHudEnabled = true;
-let minSpeed = 2;
-let maxSpeed = 3.25;
-let manualSpeed = 1.0;
+let currentVideo = null;
+let audioContext = null;
+let analyser = null;
+let source = null;
 
 const settings = {
 	smartSpeedEnabled: true,
@@ -18,14 +16,8 @@ const settings = {
 function loadSettings() {
 	chrome.storage.sync.get(Object.keys(settings), (cfg) => {
 		Object.assign(settings, cfg);
-		smartEnabled = settings.smartSpeedEnabled;
-		autoTrainEnabled = settings.autoTrain;
-		showHudEnabled = settings.showHud;
-		minSpeed = settings.minSpeed;
-		maxSpeed = settings.maxSpeed;
-		manualSpeed = settings.manualSpeed || 1.0;
 
-		if (showHudEnabled) {
+		if (settings.showHud) {
 			initHUD();
 		} else if (hudElement) {
 			hudElement.remove();
@@ -49,7 +41,7 @@ function initHUD() {
 	hudElement = document.createElement("div");
 	hudElement.id = "smartspeed-hud";
 
-	if (smartEnabled) {
+	if (settings.smartSpeedEnabled) {
 		hudElement.textContent = "Smart Speed: 1x";
 	} else {
 		// Manual mode with controls
@@ -59,7 +51,7 @@ function initHUD() {
 		leftBtn.onclick = () => changeManualSpeed(-0.25);
 
 		const speedDisplay = document.createElement("span");
-		speedDisplay.textContent = `Manual: ${manualSpeed}x`;
+		speedDisplay.textContent = `Manual: ${settings.manualSpeed}x`;
 
 		const rightBtn = document.createElement("button");
 		rightBtn.className = "speed-control-btn";
@@ -94,25 +86,28 @@ function initHUD() {
 }
 
 function changeManualSpeed(delta) {
-	manualSpeed = Math.max(0.25, Math.min(4.0, manualSpeed + delta));
-	manualSpeed = Math.round(manualSpeed * 100) / 100; // Round to 2 decimals
+	settings.manualSpeed = Math.max(
+		0.25,
+		Math.min(4.0, settings.manualSpeed + delta),
+	);
+	settings.manualSpeed = Math.round(settings.manualSpeed * 100) / 100; // Round to 2 decimals
 
 	// Update video speed immediately
 	const video = document.querySelector("video");
-	if (video && !smartEnabled) {
-		video.playbackRate = manualSpeed;
+	if (video && !settings.smartSpeedEnabled) {
+		video.playbackRate = settings.manualSpeed;
 	}
 
 	// Update HUD display
-	if (hudElement && !smartEnabled) {
+	if (hudElement && !settings.smartSpeedEnabled) {
 		const speedDisplay = hudElement.querySelector("span");
 		if (speedDisplay) {
-			speedDisplay.textContent = `Manual: ${manualSpeed}x`;
+			speedDisplay.textContent = `Manual: ${settings.manualSpeed}x`;
 		}
 	}
 
 	// Save to storage
-	chrome.storage.sync.set({ manualSpeed: manualSpeed });
+	chrome.storage.sync.set({ manualSpeed: settings.manualSpeed });
 }
 
 // simple model
@@ -132,18 +127,21 @@ chrome.storage.local.get("smartSpeedModel", (res) => {
 });
 
 function analyzeAndSetSpeed(video) {
-	if (!smartEnabled) return;
+	if (!settings.smartSpeedEnabled) return;
 
-	const ctx = new AudioContext();
-	const src = ctx.createMediaElementSource(video);
-	const analyser = ctx.createAnalyser();
-	src.connect(analyser);
-	analyser.connect(ctx.destination);
+	// Reuse AudioContext if available
+	if (!audioContext) {
+		audioContext = new AudioContext();
+		analyser = audioContext.createAnalyser();
+		source = audioContext.createMediaElementSource(video);
+		source.connect(analyser);
+		analyser.connect(audioContext.destination);
+	}
 
 	const data = new Uint8Array(analyser.fftSize);
 
 	function tick() {
-		if (!smartEnabled) return;
+		if (!settings.smartSpeedEnabled) return;
 
 		analyser.getByteTimeDomainData(data);
 		let rms = 0;
@@ -158,15 +156,16 @@ function analyzeAndSetSpeed(video) {
 		// confidence: silence → faster, speech → slower
 		const confidence =
 			result.silence / ((result.silence || 0) + (result.speech || 0));
-		const speed = minSpeed + confidence * (maxSpeed - minSpeed);
+		const speed =
+			settings.minSpeed + confidence * (settings.maxSpeed - settings.minSpeed);
 		video.playbackRate = parseFloat(speed.toFixed(2));
 
-		if (hudElement && showHudEnabled) {
+		if (hudElement && settings.showHud) {
 			hudElement.textContent = `Smart Speed: ${speed.toFixed(2)}x`;
 		}
 
-		// auto-training: use global variable, don't call get in every frame
-		if (autoTrainEnabled) {
+		// Auto-training
+		if (settings.autoTrain) {
 			net.train(
 				[
 					{
@@ -179,9 +178,7 @@ function analyzeAndSetSpeed(video) {
 				],
 				{ iterations: 1 },
 			);
-			const json = net.toJSON();
-			// console.log(settings.autoTrain);
-			chrome.storage.local.set({ smartSpeedModel: json });
+			chrome.storage.local.set({ smartSpeedModel: net.toJSON() });
 		}
 
 		requestAnimationFrame(tick);
@@ -201,10 +198,11 @@ function startSmartSpeed(video) {
 function setupVideoObserver() {
 	const video = document.querySelector("video");
 	if (video) {
-		if (smartEnabled) {
+		currentVideo = video;
+		if (settings.smartSpeedEnabled) {
 			startSmartSpeed(video);
 		} else {
-			video.playbackRate = manualSpeed;
+			video.playbackRate = settings.manualSpeed;
 		}
 	} else {
 		// Observe for video element if not found
@@ -212,10 +210,11 @@ function setupVideoObserver() {
 			const video = document.querySelector("video");
 			if (video) {
 				observer.disconnect();
-				if (smartEnabled) {
+				currentVideo = video;
+				if (settings.smartSpeedEnabled) {
 					startSmartSpeed(video);
 				} else {
-					video.playbackRate = manualSpeed;
+					video.playbackRate = settings.manualSpeed;
 				}
 			}
 		});
@@ -226,44 +225,38 @@ function setupVideoObserver() {
 // message listener (e.g. ON/OFF)
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 	if (msg.action === "toggleSmartSpeed") {
-		smartEnabled = !smartEnabled;
-		chrome.storage.sync.set({ smartSpeedEnabled: smartEnabled });
+		settings.smartSpeedEnabled = !settings.smartSpeedEnabled;
+		chrome.storage.sync.set({ smartSpeedEnabled: settings.smartSpeedEnabled });
 
-		const video = document.querySelector("video");
-		if (!smartEnabled) {
-			if (video) video.playbackRate = manualSpeed;
-			if (showHudEnabled) {
+		const video = currentVideo || document.querySelector("video");
+		if (!settings.smartSpeedEnabled) {
+			if (video) video.playbackRate = settings.manualSpeed;
+			if (settings.showHud) {
 				initHUD(); // Rebuild HUD with manual controls
 			}
 		} else {
 			if (video) startSmartSpeed(video);
-			if (showHudEnabled) {
+			if (settings.showHud) {
 				initHUD(); // Rebuild HUD in smart mode
 			}
 		}
 
-		sendResponse({ status: "toggled", enabled: smartEnabled });
+		sendResponse({ status: "toggled", enabled: settings.smartSpeedEnabled });
 	} else if (msg.action === "settingsUpdated") {
 		Object.assign(settings, msg.settings);
-		smartEnabled = settings.smartSpeedEnabled;
-		autoTrainEnabled = settings.autoTrain;
-		showHudEnabled = settings.showHud;
-		minSpeed = settings.minSpeed;
-		maxSpeed = settings.maxSpeed;
-		manualSpeed = settings.manualSpeed || manualSpeed;
 
-		if (showHudEnabled) {
+		if (settings.showHud) {
 			initHUD();
 		} else if (hudElement) {
 			hudElement.remove();
 			hudElement = null;
 		}
 
-		const video = document.querySelector("video");
-		if (smartEnabled && video) {
+		const video = currentVideo || document.querySelector("video");
+		if (settings.smartSpeedEnabled && video) {
 			startSmartSpeed(video);
 		} else if (video) {
-			video.playbackRate = manualSpeed;
+			video.playbackRate = settings.manualSpeed;
 		}
 
 		sendResponse({ status: "settings updated" });
@@ -276,7 +269,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		sendResponse({ status: "model reset" });
 	} else if (msg.action === "getStatus") {
 		sendResponse({
-			enabled: smartEnabled,
+			enabled: settings.smartSpeedEnabled,
 			settings: settings,
 		});
 	}
