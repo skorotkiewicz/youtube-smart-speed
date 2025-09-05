@@ -1,6 +1,6 @@
-# YouTube Smart Speed - AI Playback Control
+# SmartSpeed - Multi-Service AI Playback Control
 
-Intelligent Firefox extension that automatically adjusts YouTube playback speed based on real-time audio analysis using artificial intelligence.
+Intelligent Firefox extension that automatically adjusts video playback speed on multiple platforms (YouTube, Vimeo, Dailymotion, Twitch, Netflix, Disney+, and more) based on real-time audio analysis using artificial intelligence.
 
 ## 🚀 Features
 
@@ -25,6 +25,7 @@ Intelligent Firefox extension that automatically adjusts YouTube playback speed 
 ### Popup (click plugin icon)
 - Quick Smart Speed enable/disable toggle
 - Current settings preview
+- Service detection (YouTube, Vimeo, Dailymotion, Twitch, Netflix, Disney+)
 - Direct access to options
 
 ### Options Page
@@ -73,9 +74,10 @@ The plugin utilizes:
 │   ├── js/              # JavaScript files
 │   │   ├── background.js    # Background communication
 │   │   ├── brain.js        # Machine learning library
-│   │   ├── content.js      # Main YouTube page logic
+│   │   ├── content.js      # Main video page logic
 │   │   ├── options.js      # Settings page logic
-│   │   └── popup.js        # Popup interface logic
+│   │   ├── popup.js        # Popup interface logic
+│   │   └── services.js     # Multi-service configuration
 │   ├── css/             # Stylesheets
 │   │   └── overlay.css     # HUD and overlay styles
 │   └── html/            # HTML templates
@@ -87,7 +89,8 @@ The plugin utilizes:
 │   └── icon128.svg
 └── docs/                # Documentation
     ├── INSTALLATION.md
-    └── RELEASE_CHECKLIST.md
+    ├── RELEASE_CHECKLIST.md
+    └── SERVICES.md       # Guide for adding new video services
 ```
 
 ## 🎨 Customization

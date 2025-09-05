@@ -11,8 +11,22 @@
 	"permissions": ["storage", "tabs", "activeTab"],
 	"content_scripts": [
 		{
-			"matches": ["*://*.youtube.com/*", "*://youtube.com/*"],
-			"js": ["src/js/brain.js", "src/js/content.js"],
+			"matches": [
+				"*://*.youtube.com/*",
+				"*://youtube.com/*",
+				"*://*.vimeo.com/*",
+				"*://vimeo.com/*",
+				"*://player.vimeo.com/*",
+				"*://*.dailymotion.com/*",
+				"*://dailymotion.com/*",
+				"*://*.twitch.tv/*",
+				"*://twitch.tv/*",
+				"*://*.netflix.com/*",
+				"*://netflix.com/*",
+				"*://*.disneyplus.com/*",
+				"*://disneyplus.com/*"
+			],
+			"js": ["src/js/services.js", "src/js/brain.js", "src/js/content.js"],
 			"css": ["src/css/overlay.css"],
 			"run_at": "document_idle"
 		}

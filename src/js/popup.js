@@ -21,36 +21,129 @@ function updateUI(enabled, settings) {
 	}
 }
 
+// Load services configuration
+let servicesConfig = null;
+
+// Default services configuration (no duplication)
+const DEFAULT_SERVICES = {
+	youtube: {
+		name: "YouTube",
+		domains: ["youtube.com", "www.youtube.com", "m.youtube.com"],
+		enabled: true,
+	},
+	vimeo: {
+		name: "Vimeo",
+		domains: ["vimeo.com", "www.vimeo.com", "player.vimeo.com"],
+		enabled: true,
+	},
+	dailymotion: {
+		name: "Dailymotion",
+		domains: ["dailymotion.com", "www.dailymotion.com"],
+		enabled: true,
+	},
+	twitch: {
+		name: "Twitch",
+		domains: ["twitch.tv", "www.twitch.tv"],
+		enabled: true,
+	},
+	netflix: {
+		name: "Netflix",
+		domains: ["netflix.com", "www.netflix.com"],
+		enabled: true,
+	},
+	disneyplus: {
+		name: "Disney+",
+		domains: ["disneyplus.com", "www.disneyplus.com"],
+		enabled: true,
+	},
+};
+
+function loadServicesConfig(callback) {
+	// Get services from background script (single source of truth)
+	chrome.runtime.sendMessage({ action: "getServices" }, (response) => {
+		servicesConfig = response?.services || DEFAULT_SERVICES;
+		if (callback) callback();
+	});
+}
+
+function isSupportedUrl(url) {
+	try {
+		const hostname = new URL(url).hostname;
+
+		for (const service of Object.values(servicesConfig)) {
+			if (
+				service.enabled &&
+				service.domains.some((domain) => hostname.includes(domain))
+			) {
+				return true;
+			}
+		}
+		return false;
+	} catch (e) {
+		return false;
+	}
+}
+
+function getServiceName(url) {
+	try {
+		const hostname = new URL(url).hostname;
+
+		for (const service of Object.values(servicesConfig)) {
+			if (
+				service.enabled &&
+				service.domains.some((domain) => hostname.includes(domain))
+			) {
+				return service.name;
+			}
+		}
+		return "Video";
+	} catch (e) {
+		return "Video";
+	}
+}
+
+function getSupportedServicesList() {
+	return Object.values(servicesConfig)
+		.filter((service) => service.enabled)
+		.map((service) => service.name)
+		.join(", ");
+}
+
 function checkStatus() {
 	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 		const tab = tabs[0];
-		if (tab && tab.url.includes("youtube.com")) {
+		if (tab && isSupportedUrl(tab.url)) {
+			const serviceName = getServiceName(tab.url);
 			chrome.tabs.sendMessage(tab.id, { action: "getStatus" }, (response) => {
 				if (response) {
 					updateUI(response.enabled, response.settings);
 				} else {
 					document.getElementById("statusText").textContent =
-						"Cannot connect to YouTube tab";
+						`Cannot connect to ${serviceName} tab`;
 					document.getElementById("speedInfo").textContent =
-						"Refresh YouTube page";
+						`Refresh ${serviceName} page`;
 				}
 			});
 		} else {
-			document.getElementById("statusText").textContent = "Open YouTube tab";
+			document.getElementById("statusText").textContent =
+				"Open supported video site";
 			document.getElementById("speedInfo").textContent =
-				"Plugin works only on YouTube";
+				`Plugin works on ${getSupportedServicesList()}`;
 		}
 	});
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-	checkStatus();
+	// Load services config first, then check status
+	loadServicesConfig(() => {
+		checkStatus();
+	});
 });
 
 document.getElementById("toggle").addEventListener("click", () => {
 	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 		const tab = tabs[0];
-		if (tab && tab.url.includes("youtube.com")) {
+		if (tab && isSupportedUrl(tab.url)) {
 			chrome.tabs.sendMessage(
 				tab.id,
 				{ action: "toggleSmartSpeed" },

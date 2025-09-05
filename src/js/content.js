@@ -3,6 +3,7 @@ let currentVideo = null;
 let audioContext = null;
 let analyser = null;
 let source = null;
+let currentService = null;
 
 const settings = {
 	smartSpeedEnabled: true,
@@ -16,6 +17,16 @@ const settings = {
 function loadSettings() {
 	chrome.storage.sync.get(Object.keys(settings), (cfg) => {
 		Object.assign(settings, cfg);
+
+		// Get current service configuration
+		currentService = getCurrentService();
+
+		if (!currentService) {
+			console.log("SmartSpeed: Current page not supported");
+			return;
+		}
+
+		console.log(`SmartSpeed: Detected service - ${currentService.name}`);
 
 		if (settings.showHud) {
 			initHUD();
@@ -42,7 +53,7 @@ function initHUD() {
 	hudElement.id = "smartspeed-hud";
 
 	if (settings.smartSpeedEnabled) {
-		hudElement.textContent = "Smart Speed: 1x";
+		hudElement.textContent = `Smart Speed: 1x (${currentService.name})`;
 	} else {
 		// Manual mode with controls
 		const leftBtn = document.createElement("button");
@@ -51,7 +62,7 @@ function initHUD() {
 		leftBtn.onclick = () => changeManualSpeed(-0.25);
 
 		const speedDisplay = document.createElement("span");
-		speedDisplay.textContent = `Manual: ${settings.manualSpeed}x`;
+		speedDisplay.textContent = `Manual: ${settings.manualSpeed}x (${currentService.name})`;
 
 		const rightBtn = document.createElement("button");
 		rightBtn.className = "speed-control-btn";
@@ -63,8 +74,17 @@ function initHUD() {
 		hudElement.appendChild(rightBtn);
 	}
 
-	const video = document.querySelector("video");
-	const container = video ? video.parentElement : null;
+	// Use service-specific selectors
+	const video = document.querySelector(currentService.videoSelector || "video");
+	let container = null;
+
+	if (currentService.playerContainer) {
+		container = document.querySelector(currentService.playerContainer);
+	}
+
+	if (!container && video) {
+		container = video.parentElement;
+	}
 
 	if (container) {
 		container.appendChild(hudElement);
@@ -93,7 +113,8 @@ function changeManualSpeed(delta) {
 	settings.manualSpeed = Math.round(settings.manualSpeed * 100) / 100; // Round to 2 decimals
 
 	// Update video speed immediately
-	const video = document.querySelector("video");
+	const videoSelector = currentService.videoSelector || "video";
+	const video = document.querySelector(videoSelector);
 	if (video && !settings.smartSpeedEnabled) {
 		video.playbackRate = settings.manualSpeed;
 	}
@@ -102,7 +123,7 @@ function changeManualSpeed(delta) {
 	if (hudElement && !settings.smartSpeedEnabled) {
 		const speedDisplay = hudElement.querySelector("span");
 		if (speedDisplay) {
-			speedDisplay.textContent = `Manual: ${settings.manualSpeed}x`;
+			speedDisplay.textContent = `Manual: ${settings.manualSpeed}x (${currentService.name})`;
 		}
 	}
 
@@ -196,7 +217,9 @@ function startSmartSpeed(video) {
 }
 
 function setupVideoObserver() {
-	const video = document.querySelector("video");
+	const videoSelector = currentService.videoSelector || "video";
+	const video = document.querySelector(videoSelector);
+
 	if (video) {
 		currentVideo = video;
 		if (settings.smartSpeedEnabled) {
@@ -207,7 +230,7 @@ function setupVideoObserver() {
 	} else {
 		// Observe for video element if not found
 		const observer = new MutationObserver(() => {
-			const video = document.querySelector("video");
+			const video = document.querySelector(videoSelector);
 			if (video) {
 				observer.disconnect();
 				currentVideo = video;
@@ -271,6 +294,42 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		sendResponse({
 			enabled: settings.smartSpeedEnabled,
 			settings: settings,
+		});
+	} else if (msg.action === "getServices") {
+		// Return services configuration for popup
+		sendResponse({
+			services: {
+				youtube: {
+					name: "YouTube",
+					domains: ["youtube.com", "www.youtube.com", "m.youtube.com"],
+					enabled: true,
+				},
+				vimeo: {
+					name: "Vimeo",
+					domains: ["vimeo.com", "www.vimeo.com", "player.vimeo.com"],
+					enabled: true,
+				},
+				dailymotion: {
+					name: "Dailymotion",
+					domains: ["dailymotion.com", "www.dailymotion.com"],
+					enabled: true,
+				},
+				twitch: {
+					name: "Twitch",
+					domains: ["twitch.tv", "www.twitch.tv"],
+					enabled: true,
+				},
+				netflix: {
+					name: "Netflix",
+					domains: ["netflix.com", "www.netflix.com"],
+					enabled: true,
+				},
+				disneyplus: {
+					name: "Disney+",
+					domains: ["disneyplus.com", "www.disneyplus.com"],
+					enabled: true,
+				},
+			},
 		});
 	}
 });
