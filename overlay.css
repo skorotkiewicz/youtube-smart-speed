@@ -22,4 +22,30 @@
 	border-radius: 6px;
 	z-index: 999999;
 	font-family: monospace;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.speed-control-btn {
+	background: rgba(255, 255, 255, 0.2);
+	border: none;
+	color: #0f0;
+	width: 24px;
+	height: 24px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.2s;
+}
+
+.speed-control-btn:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+.speed-control-btn:active {
+	background: rgba(255, 255, 255, 0.4);
 }

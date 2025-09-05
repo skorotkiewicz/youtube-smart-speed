@@ -25,7 +25,8 @@ chrome.runtime.onInstalled.addListener(() => {
 		autoTrain: true,
 		showHud: true,
 		minSpeed: 2,
-		maxSpeed: 3.25
+		maxSpeed: 3.25,
+		manualSpeed: 1.0
 	};
 	
 	// Only set defaults if settings don't exist
