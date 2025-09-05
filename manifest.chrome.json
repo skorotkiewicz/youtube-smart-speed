@@ -49,14 +49,6 @@
 		"service_worker": "src/js/background.js",
 		"type": "module"
 	},
-	"browser_specific_settings": {
-		"gecko": {
-			"id": "smartspeed@sebastian-korotkiewicz.dev",
-			"background": {
-				"scripts": ["src/js/background.js"]
-			}
-		}
-	},
 	"action": {
 		"default_popup": "src/html/popup.html",
 		"default_title": "SmartSpeed - AI Playback Control"

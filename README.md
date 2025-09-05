@@ -37,18 +37,20 @@ Intelligent Firefox extension that automatically adjusts video playback speed on
 
 ### Firefox:
 1. Download all files from the repository
-2. Open Firefox
-3. Go to `about:debugging#/runtime/this-firefox`
-4. Click "Load Temporary Add-on"
-5. Select the `manifest.json` file from the plugin folder
+2. Select the `manifest.firefox.json` file from the plugin folder
+3. Rename it to `manifest.json`
+4. Open Firefox
+5. Go to `about:debugging#/runtime/this-firefox`
+6. Click "Load Temporary Add-on"
 
-<!-- ### Chrome :
+### Chrome:
 1. Download all files from the repository
-2. Open Chrome
-3. Go to `chrome://extensions/`
-4. Enable "Developer mode" (top right)
-5. Click "Load unpacked"
-6. Select the project folder containing `manifest.json` -->
+2. Select the `manifest.chrome.json` file from the plugin folder
+3. Rename it to `manifest.json`
+4. Open Chrome
+5. Go to `chrome://extensions/`
+6. Enable "Developer mode" (top right)
+7. Click "Load unpacked"
 
 ## 🎯 How It Works
 
@@ -129,7 +131,7 @@ Open developer tools (F12) on YouTube to see:
 ### 🏗️ Architecture Changes:
 - **Inline constants** - maximum browser compatibility
 - **Cross-browser support** - works on Chrome and Firefox
-- **Traditional background scripts** - reliable and stable
+- **Background scripts** - universal compatibility
 - **Host permissions** - explicit permission declarations
 
 ## ⚠️ Requirements

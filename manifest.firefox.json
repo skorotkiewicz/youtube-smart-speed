@@ -1,0 +1,68 @@
+{
+	"manifest_version": 3,
+	"name": "SmartSpeed - Multi-Service AI Playback Control",
+	"version": "3.0.0",
+	"description": "Intelligent multi-service playback speed control using AI. Automatically speeds up during silence and slows down during speech on YouTube, Vimeo, Netflix, Disney+, and more. Fully configurable by user.",
+	"permissions": ["storage", "tabs", "activeTab"],
+	"host_permissions": [
+		"*://*.youtube.com/*",
+		"*://youtube.com/*",
+		"*://*.vimeo.com/*",
+		"*://vimeo.com/*",
+		"*://player.vimeo.com/*",
+		"*://*.dailymotion.com/*",
+		"*://dailymotion.com/*",
+		"*://*.twitch.tv/*",
+		"*://twitch.tv/*",
+		"*://*.netflix.com/*",
+		"*://netflix.com/*",
+		"*://*.disneyplus.com/*",
+		"*://disneyplus.com/*"
+	],
+	"content_scripts": [
+		{
+			"matches": [
+				"*://*.youtube.com/*",
+				"*://youtube.com/*",
+				"*://*.vimeo.com/*",
+				"*://vimeo.com/*",
+				"*://player.vimeo.com/*",
+				"*://*.dailymotion.com/*",
+				"*://dailymotion.com/*",
+				"*://*.twitch.tv/*",
+				"*://twitch.tv/*",
+				"*://*.netflix.com/*",
+				"*://netflix.com/*",
+				"*://*.disneyplus.com/*",
+				"*://disneyplus.com/*"
+			],
+			"js": ["src/js/brain.js", "src/js/content.js"],
+			"css": ["src/css/overlay.css"],
+			"run_at": "document_idle"
+		}
+	],
+	"options_ui": {
+		"page": "src/html/options.html",
+		"open_in_tab": true
+	},
+	"background": {
+		"scripts": ["src/js/background.js"]
+	},
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "smartspeed@sebastian-korotkiewicz.dev"
+		}
+	},
+	"action": {
+		"default_popup": "src/html/popup.html",
+		"default_title": "SmartSpeed - AI Playback Control"
+	},
+	"icons": {
+		"16": "icons/icon16.svg",
+		"48": "icons/icon48.svg",
+		"128": "icons/icon128.svg"
+	},
+	"web_accessible_resources": [],
+	"homepage_url": "https://github.com/skorotkiewicz/youtube-smart-speed",
+	"author": "Sebastian Korotkiewicz"
+}
