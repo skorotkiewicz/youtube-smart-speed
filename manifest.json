@@ -3,6 +3,11 @@
 	"name": "YouTube Smart Speed - AI Playback Control",
 	"version": "2.0.0",
 	"description": "Intelligent YouTube playback speed control using AI. Automatically speeds up during silence and slows down during speech. Fully configurable by user.",
+	"applications": {
+		"gecko": {
+			"id": "youtube-smart-speed@skorotkiewicz.dev"
+		}
+	},
 	"permissions": ["storage", "tabs", "activeTab"],
 	"content_scripts": [
 		{

@@ -110,7 +110,7 @@ function analyzeAndSetSpeed(video) {
 				{ iterations: 1 },
 			);
 			const json = net.toJSON();
-			console.log(json);
+			console.log(settings.autoTrain);
 			chrome.storage.local.set({ smartSpeedModel: json });
 		}
 

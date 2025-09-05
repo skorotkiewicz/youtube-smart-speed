@@ -28,7 +28,16 @@ chrome.runtime.onInstalled.addListener(() => {
 		maxSpeed: 3.25
 	};
 	
-	chrome.storage.sync.set(defaultSettings, () => {
-		console.log("SmartSpeed: Default settings initialized");
+	// Only set defaults if settings don't exist
+	chrome.storage.sync.get(Object.keys(defaultSettings), (result) => {
+		const hasExistingSettings = Object.keys(result).length > 0;
+		
+		if (!hasExistingSettings) {
+			chrome.storage.sync.set(defaultSettings, () => {
+				console.log("SmartSpeed: Default settings initialized");
+			});
+		} else {
+			console.log("SmartSpeed: Using existing settings");
+		}
 	});
 });
