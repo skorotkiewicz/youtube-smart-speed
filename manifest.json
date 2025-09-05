@@ -12,26 +12,26 @@
 	"content_scripts": [
 		{
 			"matches": ["*://*.youtube.com/*", "*://youtube.com/*"],
-			"js": ["brain.js", "content.js"],
-			"css": ["overlay.css"],
+			"js": ["src/js/brain.js", "src/js/content.js"],
+			"css": ["src/css/overlay.css"],
 			"run_at": "document_idle"
 		}
 	],
 	"options_ui": {
-		"page": "options.html",
+		"page": "src/html/options.html",
 		"open_in_tab": true
 	},
 	"background": {
-		"scripts": ["background.js"],
+		"scripts": ["src/js/background.js"],
 		"persistent": false
 	},
 	"browser_action": {
-		"default_popup": "popup.html",
+		"default_popup": "src/html/popup.html",
 		"default_title": "YouTube Smart Speed"
 	},
 	"icons": {
-		"48": "icon48.svg",
-		"96": "icon128.svg"
+		"48": "icons/icon48.svg",
+		"96": "icons/icon128.svg"
 	},
 	"web_accessible_resources": [],
 	"homepage_url": "https://github.com/skorotkiewicz/youtube-smart-speed",

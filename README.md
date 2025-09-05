@@ -1,6 +1,6 @@
 # YouTube Smart Speed - AI Playback Control
 
-Intelligent Firefox plugin that automatically adjusts YouTube playback speed based on real-time audio analysis using artificial intelligence.
+Intelligent Firefox extension that automatically adjusts YouTube playback speed based on real-time audio analysis using artificial intelligence.
 
 ## 🚀 Features
 
@@ -9,13 +9,15 @@ Intelligent Firefox plugin that automatically adjusts YouTube playback speed bas
 - **Adaptive acceleration** - automatically speeds up during silence
 - **Controlled deceleration** - slows down during detected speech
 - **Machine learning** - neural network learns from your usage patterns
+- **Manual speed control** - set custom playback speed when AI is disabled
 - **Full configuration** - all parameters can be customized to your preferences
 
 ### ⚙️ User Settings
 - **Speed range** - set your own range from 0.25x to 4x (default 2x-3.25x)
-- **Smart Speed ON/OFF** - easily enable/disable functionality
+- **Manual speed** - custom speed for manual mode (default 1.0x)
+- **Smart Speed ON/OFF** - easily enable/disable AI functionality
 - **Auto-training** - enable/disable neural network machine learning
-- **On-screen HUD** - show/hide current speed information
+- **On-screen HUD** - show/hide current speed information with hover
 - **Model reset** - start training from scratch
 
 ## 📱 Interface
@@ -32,11 +34,20 @@ Intelligent Firefox plugin that automatically adjusts YouTube playback speed bas
 
 ## 🔧 Installation
 
+### Firefox:
 1. Download all files from the repository
 2. Open Firefox
 3. Go to `about:debugging#/runtime/this-firefox`
 4. Click "Load Temporary Add-on"
 5. Select the `manifest.json` file from the plugin folder
+
+<!-- ### Chrome :
+1. Download all files from the repository
+2. Open Chrome
+3. Go to `chrome://extensions/`
+4. Enable "Developer mode" (top right)
+5. Click "Load unpacked"
+6. Select the project folder containing `manifest.json` -->
 
 ## 🎯 How It Works
 
@@ -54,13 +65,30 @@ The plugin utilizes:
 
 ## 🛠️ File Structure
 
-- `manifest.json` - extension configuration
-- `content.js` - main logic running on YouTube page  
-- `brain.js` - machine learning library
-- `background.js` - background script for communication
-- `popup.html/js` - popup interface
-- `options.html/js` - settings page
-- `overlay.css` - styles for on-screen HUD
+```
+/smart-speed/
+├── manifest.json          # Extension configuration
+├── README.md             # This documentation
+├── src/                  # Source code
+│   ├── js/              # JavaScript files
+│   │   ├── background.js    # Background communication
+│   │   ├── brain.js        # Machine learning library
+│   │   ├── content.js      # Main YouTube page logic
+│   │   ├── options.js      # Settings page logic
+│   │   └── popup.js        # Popup interface logic
+│   ├── css/             # Stylesheets
+│   │   └── overlay.css     # HUD and overlay styles
+│   └── html/            # HTML templates
+│       ├── options.html    # Settings page
+│       └── popup.html      # Extension popup
+├── icons/               # Extension icons
+│   ├── icon16.svg
+│   ├── icon48.svg
+│   └── icon128.svg
+└── docs/                # Documentation
+    ├── INSTALLATION.md
+    └── RELEASE_CHECKLIST.md
+```
 
 ## 🎨 Customization
 
@@ -80,18 +108,22 @@ Open developer tools (F12) on YouTube to see:
 
 ## 📈 Version 2.0.0
 
-### New Features:
-- Full user configuration
-- Better popup interface with state preview
-- Advanced training options
-- Model reset capability
-- Improved settings page with visual interface
+### ✨ New Features:
+- **Manual speed control** - custom playback speed when AI is disabled
+- **HUD hover functionality** - speed display appears on video hover
+- **Organized project structure** - professional directory layout
+- **Full user configuration** - all parameters customizable
+- **Better popup interface** - state preview and quick access
+- **Advanced training options** - enable/disable AI learning
+- **Model reset capability** - start fresh training
 
-### Improvements:
-- More stable operation
-- Better memory management
-- Performance optimization
-- Increased compatibility
+### 🚀 Improvements:
+- **Performance optimization** - reduced memory usage and faster loading
+- **Code cleanup** - removed redundant code and debug artifacts
+- **Better error handling** - more robust operation
+- **Memory management** - proper cleanup and resource reuse
+- **Cross-browser compatibility** - works on both Chrome and Firefox
+- **Stable operation** - fixed timing issues and race conditions
 
 ## ⚠️ Requirements
 
