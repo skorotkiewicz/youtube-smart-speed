@@ -72,12 +72,11 @@ The plugin utilizes:
 ├── README.md             # This documentation
 ├── src/                  # Source code
 │   ├── js/              # JavaScript files
-│   │   ├── background.js    # Background communication
+│   │   ├── background.js    # Background script
 │   │   ├── brain.js        # Machine learning library
 │   │   ├── content.js      # Main video page logic
 │   │   ├── options.js      # Settings page logic
-│   │   ├── popup.js        # Popup interface logic
-│   │   └── services.js     # Multi-service configuration
+│   │   └── popup.js        # Popup interface logic
 │   ├── css/             # Stylesheets
 │   │   └── overlay.css     # HUD and overlay styles
 │   └── html/            # HTML templates
@@ -109,24 +108,29 @@ Open developer tools (F12) on YouTube to see:
 - Model saving/loading
 - Error messages
 
-## 📈 Version 2.0.0
+## 📈 Version 3.0.0 - Manifest V3 + ES Modules
 
 ### ✨ New Features:
-- **Manual speed control** - custom playback speed when AI is disabled
-- **HUD hover functionality** - speed display appears on video hover
-- **Organized project structure** - professional directory layout
-- **Full user configuration** - all parameters customizable
-- **Better popup interface** - state preview and quick access
-- **Advanced training options** - enable/disable AI learning
-- **Model reset capability** - start fresh training
+- **Manifest V3** - modern Chrome extension standard
+- **ES Modules** - native JavaScript imports/exports
+- **Single Source of Truth** - shared constants file
+- **Zero Code Duplication** - all configurations in one place
+- **Modular Architecture** - clean separation of concerns
+- **Future-Proof** - ready for modern web standards
 
 ### 🚀 Improvements:
-- **Performance optimization** - reduced memory usage and faster loading
-- **Code cleanup** - removed redundant code and debug artifacts
-- **Better error handling** - more robust operation
-- **Memory management** - proper cleanup and resource reuse
-- **Cross-browser compatibility** - works on both Chrome and Firefox
-- **Stable operation** - fixed timing issues and race conditions
+- **Performance optimization** - service worker architecture
+- **Code deduplication** - eliminated all repeated configurations
+- **Better maintainability** - single file for all constants
+- **Enhanced security** - MV3 security improvements
+- **Modern JavaScript** - ES modules throughout
+- **Clean architecture** - proper separation of data and logic
+
+### 🏗️ Architecture Changes:
+- **Inline constants** - maximum browser compatibility
+- **Cross-browser support** - works on Chrome and Firefox
+- **Traditional background scripts** - reliable and stable
+- **Host permissions** - explicit permission declarations
 
 ## ⚠️ Requirements
 

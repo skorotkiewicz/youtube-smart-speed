@@ -6,7 +6,7 @@ Rozszerzenie SmartSpeed zostało zaprojektowane tak, aby łatwo można było dod
 
 ## 📝 Instrukcja Dodawania Serwisu
 
-### Krok 1: Edytuj plik `src/js/services.js`
+### Krok 1: Edytuj plik `src/js/constants.js`
 
 Dodaj nową konfigurację do obiektu `VIDEO_SERVICES`:
 

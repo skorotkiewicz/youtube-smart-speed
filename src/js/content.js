@@ -1,3 +1,66 @@
+const VIDEO_SERVICES = {
+	youtube: {
+		name: "YouTube",
+		domains: ["youtube.com", "www.youtube.com", "m.youtube.com"],
+		videoSelector: "video",
+		containerSelector: ".html5-video-player",
+		playerContainer: ".html5-video-player",
+		enabled: true,
+	},
+	vimeo: {
+		name: "Vimeo",
+		domains: ["vimeo.com", "www.vimeo.com", "player.vimeo.com"],
+		videoSelector: "video",
+		containerSelector: ".player",
+		playerContainer: ".player",
+		enabled: true,
+	},
+	dailymotion: {
+		name: "Dailymotion",
+		domains: ["dailymotion.com", "www.dailymotion.com"],
+		videoSelector: "video",
+		containerSelector: ".player-container",
+		playerContainer: ".player-container",
+		enabled: true,
+	},
+	twitch: {
+		name: "Twitch",
+		domains: ["twitch.tv", "www.twitch.tv"],
+		videoSelector: "video",
+		containerSelector: ".player-video",
+		playerContainer: ".player-video",
+		enabled: true,
+	},
+	netflix: {
+		name: "Netflix",
+		domains: ["netflix.com", "www.netflix.com"],
+		videoSelector: "video",
+		containerSelector: ".player-container",
+		playerContainer: ".player-container",
+		enabled: true,
+	},
+	disneyplus: {
+		name: "Disney+",
+		domains: ["disneyplus.com", "www.disneyplus.com"],
+		videoSelector: "#hivePlayer",
+		containerSelector: "#hivePlayer",
+		playerContainer: "#hivePlayer",
+		enabled: true,
+	},
+};
+
+function getCurrentService() {
+	const hostname = window.location.hostname;
+
+	for (const [key, service] of Object.entries(VIDEO_SERVICES)) {
+		if (service.enabled && service.domains.includes(hostname)) {
+			return { ...service, key };
+		}
+	}
+
+	return null;
+}
+
 let hudElement = null;
 let currentVideo = null;
 let audioContext = null;
@@ -296,40 +359,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			settings: settings,
 		});
 	} else if (msg.action === "getServices") {
-		// Return services configuration for popup
-		sendResponse({
-			services: {
-				youtube: {
-					name: "YouTube",
-					domains: ["youtube.com", "www.youtube.com", "m.youtube.com"],
-					enabled: true,
-				},
-				vimeo: {
-					name: "Vimeo",
-					domains: ["vimeo.com", "www.vimeo.com", "player.vimeo.com"],
-					enabled: true,
-				},
-				dailymotion: {
-					name: "Dailymotion",
-					domains: ["dailymotion.com", "www.dailymotion.com"],
-					enabled: true,
-				},
-				twitch: {
-					name: "Twitch",
-					domains: ["twitch.tv", "www.twitch.tv"],
-					enabled: true,
-				},
-				netflix: {
-					name: "Netflix",
-					domains: ["netflix.com", "www.netflix.com"],
-					enabled: true,
-				},
-				disneyplus: {
-					name: "Disney+",
-					domains: ["disneyplus.com", "www.disneyplus.com"],
-					enabled: true,
-				},
-			},
-		});
+		// Return services configuration for popup (using imported constants)
+		sendResponse({ services: VIDEO_SERVICES });
 	}
 });

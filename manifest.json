@@ -1,14 +1,24 @@
 {
-	"manifest_version": 2,
-	"name": "YouTube Smart Speed - AI Playback Control",
-	"version": "2.0.0",
-	"description": "Intelligent YouTube playback speed control using AI. Automatically speeds up during silence and slows down during speech. Fully configurable by user.",
-	"applications": {
-		"gecko": {
-			"id": "youtube-smart-speed@skorotkiewicz.dev"
-		}
-	},
+	"manifest_version": 3,
+	"name": "SmartSpeed - Multi-Service AI Playback Control",
+	"version": "3.0.0",
+	"description": "Intelligent multi-service playback speed control using AI. Automatically speeds up during silence and slows down during speech on YouTube, Vimeo, Netflix, Disney+, and more. Fully configurable by user.",
 	"permissions": ["storage", "tabs", "activeTab"],
+	"host_permissions": [
+		"*://*.youtube.com/*",
+		"*://youtube.com/*",
+		"*://*.vimeo.com/*",
+		"*://vimeo.com/*",
+		"*://player.vimeo.com/*",
+		"*://*.dailymotion.com/*",
+		"*://dailymotion.com/*",
+		"*://*.twitch.tv/*",
+		"*://twitch.tv/*",
+		"*://*.netflix.com/*",
+		"*://netflix.com/*",
+		"*://*.disneyplus.com/*",
+		"*://disneyplus.com/*"
+	],
 	"content_scripts": [
 		{
 			"matches": [
@@ -26,7 +36,7 @@
 				"*://*.disneyplus.com/*",
 				"*://disneyplus.com/*"
 			],
-			"js": ["src/js/services.js", "src/js/brain.js", "src/js/content.js"],
+			"js": ["src/js/brain.js", "src/js/content.js"],
 			"css": ["src/css/overlay.css"],
 			"run_at": "document_idle"
 		}
@@ -36,16 +46,20 @@
 		"open_in_tab": true
 	},
 	"background": {
-		"scripts": ["src/js/background.js"],
-		"persistent": false
+		"scripts": ["src/js/background.js"]
 	},
-	"browser_action": {
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "smartspeed@sebastian-korotkiewicz.dev"
+		}
+	},
+	"action": {
 		"default_popup": "src/html/popup.html",
-		"default_title": "YouTube Smart Speed"
+		"default_title": "SmartSpeed - AI Playback Control"
 	},
 	"icons": {
 		"48": "icons/icon48.svg",
-		"96": "icons/icon128.svg"
+		"128": "icons/icon128.svg"
 	},
 	"web_accessible_resources": [],
 	"homepage_url": "https://github.com/skorotkiewicz/youtube-smart-speed",

@@ -1,31 +1,5 @@
-function updateUI(enabled, settings) {
-	const statusElement = document.getElementById("status");
-	const statusText = document.getElementById("statusText");
-	const speedInfo = document.getElementById("speedInfo");
-	const toggleButton = document.getElementById("toggle");
-
-	if (enabled) {
-		statusElement.className = "status enabled";
-		statusText.textContent = "✅ Smart Speed ENABLED";
-		toggleButton.textContent = "Disable Smart Speed";
-		toggleButton.className = "toggle-btn enabled";
-	} else {
-		statusElement.className = "status disabled";
-		statusText.textContent = "❌ Smart Speed DISABLED";
-		toggleButton.textContent = "Enable Smart Speed";
-		toggleButton.className = "toggle-btn";
-	}
-
-	if (settings) {
-		speedInfo.textContent = `Speed: ${settings.minSpeed}x - ${settings.maxSpeed}x | Auto-training: ${settings.autoTrain ? "ON" : "OFF"} | HUD: ${settings.showHud ? "ON" : "OFF"}`;
-	}
-}
-
-// Load services configuration
-let servicesConfig = null;
-
-// Default services configuration (no duplication)
-const DEFAULT_SERVICES = {
+// Firefox compatibility: Inline constants
+const VIDEO_SERVICES = {
 	youtube: {
 		name: "YouTube",
 		domains: ["youtube.com", "www.youtube.com", "m.youtube.com"],
@@ -58,10 +32,35 @@ const DEFAULT_SERVICES = {
 	},
 };
 
+let servicesConfig = null;
+
+function updateUI(enabled, settings) {
+	const statusElement = document.getElementById("status");
+	const statusText = document.getElementById("statusText");
+	const speedInfo = document.getElementById("speedInfo");
+	const toggleButton = document.getElementById("toggle");
+
+	if (enabled) {
+		statusElement.className = "status enabled";
+		statusText.textContent = "✅ Smart Speed ENABLED";
+		toggleButton.textContent = "Disable Smart Speed";
+		toggleButton.className = "toggle-btn enabled";
+	} else {
+		statusElement.className = "status disabled";
+		statusText.textContent = "❌ Smart Speed DISABLED";
+		toggleButton.textContent = "Enable Smart Speed";
+		toggleButton.className = "toggle-btn";
+	}
+
+	if (settings) {
+		speedInfo.textContent = `Speed: ${settings.minSpeed}x - ${settings.maxSpeed}x | Auto-training: ${settings.autoTrain ? "ON" : "OFF"} | HUD: ${settings.showHud ? "ON" : "OFF"}`;
+	}
+}
+
 function loadServicesConfig(callback) {
 	// Get services from background script (single source of truth)
 	chrome.runtime.sendMessage({ action: "getServices" }, (response) => {
-		servicesConfig = response?.services || DEFAULT_SERVICES;
+		servicesConfig = response?.services || VIDEO_SERVICES;
 		if (callback) callback();
 	});
 }

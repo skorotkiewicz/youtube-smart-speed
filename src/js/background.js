@@ -1,4 +1,3 @@
-// Shared constants (no duplication with options.js)
 const DEFAULT_SETTINGS = {
 	smartSpeedEnabled: true,
 	autoTrain: true,
@@ -8,8 +7,6 @@ const DEFAULT_SETTINGS = {
 	manualSpeed: 1.0,
 };
 
-// Import services configuration
-// Note: In manifest v2, we can't directly import, so we'll define services here
 const VIDEO_SERVICES = {
 	youtube: {
 		name: "YouTube",
