@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "YouTube Smart Speed - AI Playback Control",
 	"version": "2.0.0",
-	"description": "Inteligentne sterowanie prędkością odtwarzania YouTube z użyciem AI. Automatycznie przyspiesza podczas ciszy i spowalnia podczas mowy. Pełna konfiguracja przez użytkownika.",
+	"description": "Intelligent YouTube playback speed control using AI. Automatically speeds up during silence and slows down during speech. Fully configurable by user.",
 	"permissions": ["storage", "tabs", "activeTab"],
 	"content_scripts": [
 		{
@@ -23,6 +23,10 @@
 	"browser_action": {
 		"default_popup": "popup.html",
 		"default_title": "YouTube Smart Speed"
+	},
+	"icons": {
+		"48": "icon48.svg",
+		"96": "icon128.svg"
 	},
 	"web_accessible_resources": [],
 	"homepage_url": "https://github.com/skorotkiewicz/youtube-smart-speed",

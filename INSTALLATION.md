@@ -1,95 +1,95 @@
-# 📦 Instrukcja instalacji YouTube Smart Speed
+# 📦 YouTube Smart Speed Installation Guide
 
-## 🔧 Instalacja w Firefox
+## 🔧 Firefox Installation
 
-### Krok 1: Przygotowanie plików
-1. Pobierz wszystkie pliki z folderu projektu
-2. Upewnij się, że masz następujące pliki:
+### Step 1: File Preparation
+1. Download all files from the project folder
+2. Make sure you have the following files:
    - `manifest.json`
    - `content.js`
    - `brain.js` 
    - `background.js`
-   - `popup.html` i `popup.js`
-   - `options.html` i `options.js`
+   - `popup.html` and `popup.js`
+   - `options.html` and `options.js`
    - `overlay.css`
 
-### Krok 2: Załadowanie do Firefox
-1. Otwórz Firefox
-2. W pasku adresu wpisz: `about:debugging#/runtime/this-firefox`
-3. Kliknij **"Załaduj tymczasowy dodatek"**
-4. Wybierz plik `manifest.json` z folderu z pluginem
-5. Plugin zostanie załadowany i pojawi się ikona w pasku narzędzi
+### Step 2: Loading into Firefox
+1. Open Firefox
+2. Type in address bar: `about:debugging#/runtime/this-firefox`
+3. Click **"Load Temporary Add-on"**
+4. Select the `manifest.json` file from the plugin folder
+5. Plugin will be loaded and icon will appear in toolbar
 
-### Krok 3: Pierwsze uruchomienie
-1. Przejdź na YouTube.com
-2. Kliknij ikonę Smart Speed w pasku narzędzi
-3. Sprawdź czy status pokazuje "Smart Speed WŁĄCZONY"
-4. Włącz dowolne wideo - plugin rozpocznie automatyczną pracę
+### Step 3: First Run
+1. Go to YouTube.com
+2. Click Smart Speed icon in toolbar
+3. Check if status shows "Smart Speed ENABLED"
+4. Play any video - plugin will start working automatically
 
-## ⚙️ Konfiguracja
+## ⚙️ Configuration
 
-### Podstawowe ustawienia
-1. Kliknij prawym przyciskiem na ikonę pluginu
-2. Wybierz **"Opcje"** lub kliknij "Otwórz ustawienia" w popup
-3. Dostosuj parametry do swoich preferencji:
-   - **Prędkość minimalna/maksymalna** (domyślnie 2x-3.25x)
-   - **Smart Speed** - główny włącznik funkcji
-   - **Auto-trening** - czy AI ma się uczyć na bieżąco
-   - **HUD** - czy pokazywać informacje na ekranie
+### Basic Settings
+1. Right-click on plugin icon
+2. Select **"Options"** or click "Open Settings" in popup
+3. Adjust parameters to your preferences:
+   - **Minimum/Maximum speed** (default 2x-3.25x)
+   - **Smart Speed** - main feature toggle
+   - **Auto-training** - whether AI should learn continuously
+   - **HUD** - whether to show information on screen
 
-### Zaawansowane opcje
-- **Reset modelu** - usuwa wytrenowane dane AI i zaczyna od nowa
-- **Zakres prędkości** - pełna kontrola od 0.25x do 4x
-- **Synchronizacja ustawień** - zachowuje preferencje między sesjami
+### Advanced Options
+- **Model reset** - removes trained AI data and starts fresh
+- **Speed range** - full control from 0.25x to 4x
+- **Settings sync** - preserves preferences between sessions
 
-## 🎯 Pierwsze użycie
+## 🎯 First Use
 
-1. **Otwórz YouTube** - plugin działa tylko na youtube.com
-2. **Włącz wideo** - najlepiej z dialogami (wykłady, wywiady)
-3. **Sprawdź HUD** - powinien pokazywać aktualną prędkość
-4. **Obserwuj działanie** - podczas ciszy przyspieszy, podczas mowy zwolni
+1. **Open YouTube** - plugin works only on youtube.com
+2. **Play video** - preferably with dialogue (lectures, interviews)
+3. **Check HUD** - should show current speed
+4. **Observe behavior** - speeds up during silence, slows during speech
 
-## ❓ Rozwiązywanie problemów
+## ❓ Troubleshooting
 
-### Plugin nie działa
-- Sprawdź czy jesteś na youtube.com
-- Odśwież stronę YouTube
-- Sprawdź konsole (F12) czy nie ma błędów
+### Plugin Not Working
+- Check if you're on youtube.com
+- Refresh YouTube page
+- Check console (F12) for errors
 
-### Brak HUD na ekranie  
-- Sprawdź ustawienia - czy HUD jest włączony
-- Niektóre tryby pełnoekranowe mogą ukrywać HUD
+### No HUD on Screen  
+- Check settings - make sure HUD is enabled
+- Some fullscreen modes may hide HUD
 
-### Plugin nie reaguje na dźwięk
-- Sprawdź czy wideo ma dźwięk
-- Upewnij się że przeglądarka ma pozwolenie na dostęp do audio
-- Chrome może wymagać interakcji użytkownika przed dostępem do audio
+### Plugin Not Responding to Audio
+- Check if video has sound
+- Make sure browser has permission for audio access
+- Chrome may require user interaction before audio access
 
-### Ustawienia się nie zapisują
-- Sprawdź pozwolenia pluginu na dostęp do storage
-- Spróbuj wyłączyć i włączyć plugin ponownie
+### Settings Not Saving
+- Check plugin permissions for storage access
+- Try disabling and re-enabling plugin
 
-## 🔄 Aktualizacja
+## 🔄 Updates
 
-Aby zaktualizować plugin:
-1. Usuń stary plugin z `about:debugging`
-2. Załaduj nową wersję używając tych samych kroków
-3. Ustawienia powinny zostać zachowane
+To update the plugin:
+1. Remove old plugin from `about:debugging`
+2. Load new version using same steps
+3. Settings should be preserved
 
-## 🗑️ Odinstalowanie
+## 🗑️ Uninstallation
 
-1. Przejdź do `about:debugging#/runtime/this-firefox`
-2. Znajdź "YouTube Smart Speed" 
-3. Kliknij **"Usuń"**
-4. Plugin zostanie całkowicie usunięty wraz z danymi
+1. Go to `about:debugging#/runtime/this-firefox`
+2. Find "YouTube Smart Speed" 
+3. Click **"Remove"**
+4. Plugin will be completely removed along with data
 
-## 💡 Wskazówki użytkowania
+## 💡 Usage Tips
 
-- **Najlepiej działa** z materiałami mówionym (wykłady, podcasty)
-- **Auto-trening** poprawia precyzję z czasem
-- **Eksperymentuj** z zakresami prędkości dla różnych treści
-- **Używaj HUD** do monitorowania działania
-- **Reset modelu** gdy AI nie zachowuje się jak oczekujesz
+- **Works best** with spoken content (lectures, podcasts)
+- **Auto-training** improves accuracy over time
+- **Experiment** with speed ranges for different content types
+- **Use HUD** to monitor performance
+- **Reset model** when AI doesn't behave as expected
 
 ---
-**Potrzebujesz pomocy? Sprawdź logi w konsoli deweloperskiej (F12)**
+**Need help? Check logs in developer console (F12)**

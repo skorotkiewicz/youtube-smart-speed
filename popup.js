@@ -8,18 +8,18 @@ function updateUI(enabled, settings) {
 
 	if (enabled) {
 		statusElement.className = "status enabled";
-		statusText.textContent = "✅ Smart Speed WŁĄCZONY";
-		toggleButton.textContent = "Wyłącz Smart Speed";
+		statusText.textContent = "✅ Smart Speed ENABLED";
+		toggleButton.textContent = "Disable Smart Speed";
 		toggleButton.className = "toggle-btn enabled";
 	} else {
 		statusElement.className = "status disabled";
-		statusText.textContent = "❌ Smart Speed WYŁĄCZONY";
-		toggleButton.textContent = "Włącz Smart Speed";
+		statusText.textContent = "❌ Smart Speed DISABLED";
+		toggleButton.textContent = "Enable Smart Speed";
 		toggleButton.className = "toggle-btn";
 	}
 
 	if (settings) {
-		speedInfo.textContent = `Prędkość: ${settings.minSpeed}x - ${settings.maxSpeed}x | Auto-trening: ${settings.autoTrain ? 'ON' : 'OFF'} | HUD: ${settings.showHud ? 'ON' : 'OFF'}`;
+		speedInfo.textContent = `Speed: ${settings.minSpeed}x - ${settings.maxSpeed}x | Auto-training: ${settings.autoTrain ? 'ON' : 'OFF'} | HUD: ${settings.showHud ? 'ON' : 'OFF'}`;
 	}
 	
 	currentState = enabled;
@@ -33,13 +33,13 @@ function checkStatus() {
 				if (response) {
 					updateUI(response.enabled, response.settings);
 				} else {
-					document.getElementById("statusText").textContent = "Nie można połączyć z kartą YouTube";
-					document.getElementById("speedInfo").textContent = "Odśwież stronę YouTube";
+					document.getElementById("statusText").textContent = "Cannot connect to YouTube tab";
+					document.getElementById("speedInfo").textContent = "Refresh YouTube page";
 				}
 			});
 		} else {
-			document.getElementById("statusText").textContent = "Otwórz kartę YouTube";
-			document.getElementById("speedInfo").textContent = "Plugin działa tylko na YouTube";
+			document.getElementById("statusText").textContent = "Open YouTube tab";
+			document.getElementById("speedInfo").textContent = "Plugin works only on YouTube";
 		}
 	});
 }

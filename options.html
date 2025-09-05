@@ -73,41 +73,41 @@
 </head>
 <body>
   <div class="container">
-    <h1>Ustawienia Smart Speed</h1>
+    <h1>Smart Speed Settings</h1>
     
     <div class="option-group">
-      <h3>Główne ustawienia</h3>
+      <h3>Main Settings</h3>
       <label>
-        <input type="checkbox" id="smartSpeedEnabled"> Włącz Smart Speed
+        <input type="checkbox" id="smartSpeedEnabled"> Enable Smart Speed
       </label>
       <label>
-        <input type="checkbox" id="showHud"> Pokazuj HUD na ekranie
+        <input type="checkbox" id="showHud"> Show HUD on screen
       </label>
     </div>
 
     <div class="option-group">
-      <h3>Prędkość odtwarzania</h3>
+      <h3>Playback Speed</h3>
       <div class="speed-range">
-        <label>Minimalna prędkość:</label>
+        <label>Minimum speed:</label>
         <input type="range" id="minSpeedRange" min="0.25" max="4" step="0.25" value="2">
         <input type="number" id="minSpeedNumber" min="0.25" max="4" step="0.25" value="2">x
       </div>
       <div class="speed-range">
-        <label>Maksymalna prędkość:</label>
+        <label>Maximum speed:</label>
         <input type="range" id="maxSpeedRange" min="0.25" max="4" step="0.25" value="3.25">
         <input type="number" id="maxSpeedNumber" min="0.25" max="4" step="0.25" value="3.25">x
       </div>
     </div>
 
     <div class="option-group">
-      <h3>Uczenie maszynowe</h3>
+      <h3>Machine Learning</h3>
       <label>
-        <input type="checkbox" id="autoTrain"> Włącz auto-trening sieci neuronowej
+        <input type="checkbox" id="autoTrain"> Enable neural network auto-training
       </label>
-      <button type="button" id="resetModel" class="reset-btn">Resetuj wytrenowany model</button>
+      <button type="button" id="resetModel" class="reset-btn">Reset trained model</button>
     </div>
 
-    <button id="save">Zapisz ustawienia</button>
+    <button id="save">Save Settings</button>
   </div>
 
   <script src="options.js"></script>

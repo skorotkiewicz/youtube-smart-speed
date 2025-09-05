@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		chrome.storage.sync.set(settings, () => {
 			const button = document.getElementById("save");
 			const originalText = button.textContent;
-			button.textContent = "Zapisano!";
+			button.textContent = "Saved!";
 			button.style.background = "#4CAF50";
 			
 			setTimeout(() => {
@@ -77,11 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.getElementById("resetModel").addEventListener("click", () => {
-		if (confirm("Czy na pewno chcesz zresetować wytrenowany model sieci neuronowej? Ta operacja jest nieodwracalna.")) {
+		if (confirm("Are you sure you want to reset the trained neural network model? This operation is irreversible.")) {
 			chrome.storage.local.remove("smartSpeedModel", () => {
 				const button = document.getElementById("resetModel");
 				const originalText = button.textContent;
-				button.textContent = "Model zresetowany!";
+				button.textContent = "Model reset!";
 				button.style.background = "#4CAF50";
 				
 				setTimeout(() => {
